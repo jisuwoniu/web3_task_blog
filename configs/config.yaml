@@ -1,0 +1,12 @@
+database:
+  host: "127.0.0.1"
+  port: 3308
+  user: "demo"
+  password: "password"
+  dbname: "myapp"
+  charset: "utf8mb4"
+  parseTime: true
+  loc: "Local"
+
+jwt:
+  secret: "5Est3/j0PH7RNT8DT18JPVkwZu4/uI5KP+5dzfHCCgwBX1mQ0Zlb9RFNyG4lt7Hg6WcdWsepVMeziucMIB6gTw=="
