@@ -21,7 +21,8 @@ func Login(c *gin.Context) {
 	repo := repository.NewUserRepository(db)
 	userEntity, err := repo.FindByUsername(userDTO.Username)
 	if err != nil || userEntity.Password != userDTO.Password {
-		c.Redirect(http.StatusFound, "/login")
+		//c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		c.Redirect(http.StatusFound, "/static/login.html?error=login_failed")
 		return
 	}
 
