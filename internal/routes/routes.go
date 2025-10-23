@@ -26,5 +26,6 @@ func SetupRoutes() *gin.Engine {
 
 	// 公开路由
 	r.POST("/login", handler.Login)
+	r.POST("/register", handler.Register)
 	return r
 }

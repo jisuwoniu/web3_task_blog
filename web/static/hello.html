@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .welcome-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            width: 350px;
+            border: 1px solid #e9ecef;
+        }
+        .welcome-icon {
+            font-size: 64px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .welcome-container h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+        .welcome-container p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .logout-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .logout-button:hover {
+            background-color: #0069d9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .logout-button:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <i class="fas fa-check-circle welcome-icon"></i>
+        <h1>欢迎来到博客系统</h1>
+        <p>您已成功登录！</p>
+        <a href="/static/login.html" class="logout-button">退出登录</a>
+    </div>
+</body>
+</html>

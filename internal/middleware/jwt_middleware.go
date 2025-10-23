@@ -8,12 +8,15 @@ import (
 
 func JWTMiddle() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// �d /login �
-		if c.Request.URL.Path == "/static/login.html" || c.Request.URL.Path == "/login" {
+		// 允许访问登录页面、注册页面和静态资源
+		if c.Request.URL.Path == "/static/login.html" ||
+			c.Request.URL.Path == "/static/register.html" ||
+			c.Request.URL.Path == "/login" ||
+			c.Request.URL.Path == "/register" {
 			c.Next()
-			c.Abort()
 			return
 		}
+
 		tokenString, err := c.Cookie("token")
 		_, errs := utils.ValidateToken(tokenString)
 		if tokenString == "" || err != nil || errs != nil {

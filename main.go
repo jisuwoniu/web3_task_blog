@@ -3,9 +3,12 @@ package main
 import (
 	"log"
 	"web3_task_blog/internal/routes"
+	"web3_task_blog/internal/utils"
 )
 
 func main() {
+	// 初始化配置
+	utils.InitConfig()
 
 	// /HTTP
 	r := routes.SetupRoutes()

@@ -2,22 +2,11 @@ package utils
 
 import (
 	"github.com/golang-jwt/jwt"
-	"github.com/spf13/viper"
 	"time"
 )
 
 // JWT 密钥
 var JwtKey []byte
-
-func init() {
-	viper.SetConfigName("config")
-	viper.AddConfigPath("./configs")
-	viper.SetConfigType("yaml")
-	if err := viper.ReadInConfig(); err != nil {
-		panic("Failed to read config file: " + err.Error())
-	}
-	JwtKey = []byte(viper.GetString("jwt.secret"))
-}
 
 // Claims 结构体，用于存储 JWT 的声明
 type Claims struct {

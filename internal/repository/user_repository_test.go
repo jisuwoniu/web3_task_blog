@@ -25,12 +25,13 @@ func TestUserRepository_CreateUser(t *testing.T) {
 	//
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
+	now := time.Now()
 	user := &entity.User{
 		Username:  "testuser" + strconv.Itoa(rand.New(rand.NewSource(time.Now().UnixNano())).Intn(1000)),
 		Password:  "password123",
 		Email:     "testuser@example.com",
 		Age:       20,
-		Birthday:  time.Now(),
+		Birthday:  &now,
 		PostCount: 0,
 	}
 
@@ -48,19 +49,20 @@ func TestUserRepository_GetUserByID(t *testing.T) {
 	db := setupTestDB(t)
 	repo := NewUserRepository(db)
 
+	now := time.Now()
 	user := &entity.User{
 		Username:  "testuser",
 		Password:  "password123",
 		Email:     "testuser@example.com",
 		Age:       20,
-		Birthday:  time.Now(),
+		Birthday:  &now,
 		PostCount: 0,
 	}
 
 	err := repo.CreateUser(user)
 	assert.NoError(t, err)
 
-	foundUser, err := repo.GetUserByID(user.ID)
+	foundUser, err := repo.GetUserByID(uint32(user.ID))
 	assert.NoError(t, err)
 	assert.Equal(t, user.Username, foundUser.Username)
 	assert.Equal(t, user.Email, foundUser.Email)
