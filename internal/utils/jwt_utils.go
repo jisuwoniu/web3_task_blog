@@ -10,12 +10,12 @@ var JwtKey []byte
 
 // Claims 结构体，用于存储 JWT 的声明
 type Claims struct {
-	UserID uint32 `json:"user_id"`
+	UserID uint `json:"user_id"`
 	jwt.StandardClaims
 }
 
 // GenerateToken 生成 JWT
-func GenerateToken(userID uint32) (string, error) {
+func GenerateToken(userID uint) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		UserID: userID,

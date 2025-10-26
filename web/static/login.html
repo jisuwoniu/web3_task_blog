@@ -1,19 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>登录 - 博客系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 600;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-nav li {
+            margin-left: 20px;
+        }
+        .navbar-nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .navbar-nav a:hover {
+            color: #007bff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: calc(100vh - 100px);
         }
         .login-container {
             background: #fff;
@@ -88,91 +126,113 @@
         .form-group button:active {
             transform: translateY(1px);
         }
-        .login-link {
+        .register-link {
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
             color: #666;
         }
-        .login-link a {
+        .register-link a {
             color: #007bff;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s;
         }
-        .login-link a:hover {
+        .register-link a:hover {
             color: #0069d9;
             text-decoration: underline;
-        }
-        .error-message, .success-message {
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            text-align: center;
-            display: none;
         }
         .error-message {
             background-color: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div id="error-message" class="error-message"></div>
-        <div id="success-message" class="success-message"></div>
-        <h2>Login</h2>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <i class="fas fa-blog"></i> 博客系统
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="/">首页</a></li>
+            <li><a href="/static/register.html">注册</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="login-container">
+        <div id="error-message" style="color: red; text-align: center; margin-bottom: 15px; display: none;"></div>
+        <h2>登录</h2>
         <form action="/login" method="POST">
             <div class="form-group">
-                <label for="user_name">Username</label>
+                <label for="user_name">用户名</label>
                 <input type="text" id="user_name" name="user_name" required>
                 <i class="fas fa-user input-icon"></i>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">密码</label>
                 <input type="password" id="password" name="password" required>
                 <i class="fas fa-lock input-icon"></i>
             </div>
             <div class="form-group">
-                <button type="submit">Login</button>
+                <button type="submit">登录</button>
             </div>
         </form>
-        <div class="login-link">
-            Don't have an account? <a href="/static/register.html">Register</a>
+        <div class="register-link">
+            没有账号？ <a href="/static/register.html">注册</a>
         </div>
     </div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const error = urlParams.get('error');
-        const success = urlParams.get('success');
-        
-        if (error) {
+        if (error === 'login_failed') {
             const errorElement = document.getElementById('error-message');
-            switch(error) {
-                case 'login_failed':
-                    errorElement.textContent = '登录失败，请检查用户名或密码！';
-                    break;
-                case 'invalid_credentials':
-                    errorElement.textContent = '请输入用户名和密码！';
-                    break;
-                default:
-                    errorElement.textContent = '登录失败，请重试！';
-            }
+            errorElement.textContent = '登录失败，请检查用户名或密码！';
             errorElement.style.display = 'block';
         }
         
-        if (success === 'registration_successful') {
-            const successElement = document.getElementById('success-message');
-            successElement.textContent = '注册成功！请登录。';
-            successElement.style.display = 'block';
-        }
+        // 拦截表单提交，使用AJAX登录以便获取token
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('user_name').value;
+            const password = document.getElementById('password').value;
+            
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_name: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Login successful') {
+                    // 保存token到localStorage
+                    localStorage.setItem('token', data.token);
+                    // 重定向到首页
+                    window.location.href = '/';
+                } else {
+                    const errorElement = document.getElementById('error-message');
+                    errorElement.textContent = data.error || '登录失败！';
+                    errorElement.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                const errorElement = document.getElementById('error-message');
+                errorElement.textContent = '登录失败，请稍后重试！';
+                errorElement.style.display = 'block';
+            });
+        });
     </script>
 </body>
 </html>

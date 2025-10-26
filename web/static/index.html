@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 600;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-nav li {
+            margin-left: 20px;
+        }
+        .navbar-nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .navbar-nav a:hover {
+            color: #007bff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .welcome-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .welcome-section h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .welcome-section p {
+            font-size: 18px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .posts-section {
+            margin-top: 40px;
+        }
+        .section-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .post-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .post-title {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .post-meta {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+        .post-content {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .post-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .post-link:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0069d9;
+        }
+        .btn-primary {
+            background-color: #007bff;
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #007bff;
+            color: #007bff;
+        }
+        .btn-outline:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .actions .btn {
+            margin: 0 10px;
+        }
+        .login-prompt {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .login-prompt h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .login-prompt p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <i class="fas fa-blog"></i> 博客系统
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="/">首页</a></li>
+            <li><a href="#" id="create-post-link" style="display:none;">写文章</a></li>
+            <li><a href="#" id="profile-link" style="display:none;">个人资料</a></li>
+            <li><a href="/static/login.html" id="login-link">登录</a></li>
+            <li><a href="/static/register.html" id="register-link">注册</a></li>
+            <li><a href="#" id="logout-link" style="display:none;">退出</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="login-prompt" class="login-prompt">
+            <h2>欢迎来到博客系统</h2>
+            <p>请登录或注册以查看和发布文章</p>
+            <a href="/static/login.html" class="btn btn-primary">登录</a>
+            <a href="/static/register.html" class="btn btn-outline">注册</a>
+        </div>
+
+        <div id="content" style="display:none;">
+            <div class="welcome-section">
+                <h1>欢迎来到博客系统</h1>
+                <p>在这里分享您的想法，阅读他人的文章，参与讨论</p>
+            </div>
+
+            <div class="posts-section">
+                <h2 class="section-title">最新文章</h2>
+                <div id="posts-container">
+                    <!-- 文章将通过JavaScript动态加载 -->
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="#" id="create-post-btn" class="btn btn-primary">写文章</a>
+                <a href="#" id="profile-btn" class="btn btn-outline">个人资料</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查用户是否已登录 - 优先检查Cookie中的token
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            
+            const token = getCookie('token') || localStorage.getItem('token') || sessionStorage.getItem('token');
+            
+            if (token) {
+                // 确保token也在localStorage中，以便后续使用
+                if (!localStorage.getItem('token')) {
+                    localStorage.setItem('token', token);
+                }
+                
+                // 用户已登录，显示内容
+                document.getElementById('login-prompt').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                document.getElementById('login-link').style.display = 'none';
+                document.getElementById('register-link').style.display = 'none';
+                document.getElementById('logout-link').style.display = 'block';
+                document.getElementById('create-post-link').style.display = 'block';
+                document.getElementById('profile-link').style.display = 'block';
+                
+                // 加载文章列表
+                loadPosts();
+            } else {
+                // 用户未登录，显示登录提示
+                document.getElementById('login-prompt').style.display = 'block';
+                document.getElementById('content').style.display = 'none';
+                document.getElementById('login-link').style.display = 'block';
+                document.getElementById('register-link').style.display = 'block';
+                document.getElementById('logout-link').style.display = 'none';
+                document.getElementById('create-post-link').style.display = 'none';
+                document.getElementById('profile-link').style.display = 'none';
+            }
+            
+            // 退出登录
+            document.getElementById('logout-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                sessionStorage.removeItem('token');
+                // 清除Cookie
+                document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+                window.location.reload();
+            });
+            
+            // 写文章链接
+            document.getElementById('create-post-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/posts/create-post';
+            });
+            
+            // 写文章按钮
+            document.getElementById('create-post-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/posts/create-post';
+            });
+            
+            // 个人资料链接
+            document.getElementById('profile-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/profile';
+            });
+
+            document.getElementById('profile-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/profile';
+            });
+        });
+        
+        // 加载文章列表
+        function loadPosts() {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            
+            fetch('/api/posts', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const postsContainer = document.getElementById('posts-container');
+                postsContainer.innerHTML = '';
+                
+                if (data.posts && data.posts.length > 0) {
+                    data.posts.forEach(post => {
+                        const postCard = document.createElement('div');
+                        postCard.className = 'post-card';
+                        
+                        const createdAt = new Date(post.created_at).toLocaleDateString('zh-CN');
+                        
+                        postCard.innerHTML = `
+                            <h3 class="post-title">${post.title}</h3>
+                            <div class="post-meta">
+                                <span>作者: ${post.username}</span> | 
+                                <span>分类: ${post.category || '未分类'}</span> | 
+                                <span>发布时间: ${createdAt}</span>
+                            </div>
+                            <div class="post-content">${post.content.substring(0, 200)}...</div>
+                            <a href="/post/${post.id}" class="post-link">阅读全文</a>
+                        `;
+                        
+                        postsContainer.appendChild(postCard);
+                    });
+                } else {
+                    postsContainer.innerHTML = '<p style="text-align: center; color: #666;">暂无文章</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading posts:', error);
+                document.getElementById('posts-container').innerHTML = '<p style="text-align: center; color: #666;">加载文章失败</p>';
+            });
+        }
+    </script>
+</body>
+</html>

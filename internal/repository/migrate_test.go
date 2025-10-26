@@ -6,12 +6,15 @@ import (
 )
 
 func TestAutoMigrate(t *testing.T) {
-	// 获取测试数据库连接
+	// 初始化测试数据库连接
 	db, err := GetTestDB()
 	if err != nil {
 		t.Errorf("Failed to connect to test database: %v", err)
 		return
 	}
+	
+	// 设置全局db实例
+	dbInstance = db
 
 	// 先删除已存在的表
 	err = db.Migrator().DropTable(&entity.User{}, &entity.Post{}, &entity.Comment{})
@@ -21,7 +24,7 @@ func TestAutoMigrate(t *testing.T) {
 	}
 
 	// 测试自动迁移
-	err = AutoMigrate(db)
+	err = AutoMigrate()
 	if err != nil {
 		t.Errorf("AutoMigrate failed: %v", err)
 		return

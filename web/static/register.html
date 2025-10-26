@@ -1,19 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>注册 - 博客系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 600;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-nav li {
+            margin-left: 20px;
+        }
+        .navbar-nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .navbar-nav a:hover {
+            color: #007bff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: calc(100vh - 100px);
         }
         .register-container {
             background: #fff;
@@ -88,6 +126,11 @@
         .form-group button:active {
             transform: translateY(1px);
         }
+        .form-group button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
         .login-link {
             text-align: center;
             margin-top: 20px;
@@ -122,62 +165,209 @@
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+        .password-strength strong {
+            font-weight: 600;
+        }
+        .weak {
+            color: #dc3545;
+        }
+        .medium {
+            color: #ffc107;
+        }
+        .strong {
+            color: #28a745;
+        }
     </style>
 </head>
 <body>
-    <div class="register-container">
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <i class="fas fa-blog"></i> 博客系统
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="/">首页</a></li>
+            <li><a href="/static/login.html">登录</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="register-container">
         <div id="error-message" class="error-message"></div>
         <div id="success-message" class="success-message"></div>
-        <h2>Register</h2>
-        <form action="/register" method="POST">
+        <h2>注册</h2>
+        <form id="register-form">
             <div class="form-group">
-                <label for="user_name">Username</label>
+                <label for="user_name">用户名</label>
                 <input type="text" id="user_name" name="user_name" required>
                 <i class="fas fa-user input-icon"></i>
             </div>
             <div class="form-group">
-                <label for="email">Email</label>
+                <label for="email">邮箱</label>
                 <input type="email" id="email" name="email" required>
                 <i class="fas fa-envelope input-icon"></i>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">密码</label>
                 <input type="password" id="password" name="password" required>
+                <i class="fas fa-lock input-icon"></i>
+                <div id="password-strength" class="password-strength"></div>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">确认密码</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
                 <i class="fas fa-lock input-icon"></i>
             </div>
             <div class="form-group">
-                <button type="submit">Register</button>
+                <button type="submit" id="register-btn">注册</button>
             </div>
         </form>
         <div class="login-link">
-            Already have an account? <a href="/static/login.html">Login</a>
+            已有账号？ <a href="/static/login.html">登录</a>
         </div>
     </div>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const error = urlParams.get('error');
-        const success = urlParams.get('success');
-        
-        if (error) {
-            const errorElement = document.getElementById('error-message');
-            switch(error) {
-                case 'missing_fields':
-                    errorElement.textContent = '请填写所有必填字段！';
-                    break;
-                case 'username_exists':
-                    errorElement.textContent = '用户名已存在，请选择其他用户名！';
-                    break;
-                default:
-                    errorElement.textContent = '注册失败，请重试！';
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('register-form');
+            const registerBtn = document.getElementById('register-btn');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+            const passwordStrength = document.getElementById('password-strength');
+            
+            // 检查URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            const success = urlParams.get('success');
+            
+            if (error) {
+                switch(error) {
+                    case 'missing_fields':
+                        errorMessage.textContent = '请填写所有必填字段！';
+                        break;
+                    case 'username_exists':
+                        errorMessage.textContent = '用户名已存在，请选择其他用户名！';
+                        break;
+                    default:
+                        errorMessage.textContent = '注册失败，请重试！';
+                }
+                errorMessage.style.display = 'block';
             }
-            errorElement.style.display = 'block';
-        }
-        
-        if (success) {
-            const successElement = document.getElementById('success-message');
-            successElement.textContent = '注册成功！请登录。';
-            successElement.style.display = 'block';
-        }
+            
+            if (success === 'registration_successful') {
+                successMessage.textContent = '注册成功！请登录。';
+                successMessage.style.display = 'block';
+            }
+            
+            // 密码强度检查
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = '';
+                let className = '';
+                
+                if (password.length < 6) {
+                    strength = '弱';
+                    className = 'weak';
+                } else if (password.length < 10 && (/[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password))) {
+                    strength = '中等';
+                    className = 'medium';
+                } else if (password.length >= 10 && (/[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password))) {
+                    strength = '强';
+                    className = 'strong';
+                } else {
+                    strength = '中等';
+                    className = 'medium';
+                }
+                
+                passwordStrength.innerHTML = `密码强度: <strong class="${className}">${strength}</strong>`;
+            });
+            
+            // 处理表单提交
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 隐藏之前的消息
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // 获取表单数据
+                const username = document.getElementById('user_name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                
+                // 验证表单
+                if (!username || !email || !password || !confirmPassword) {
+                    errorMessage.textContent = '请填写所有必填字段！';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    errorMessage.textContent = '两次输入的密码不一致！';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    errorMessage.textContent = '密码长度至少为6个字符！';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // 禁用注册按钮
+                registerBtn.disabled = true;
+                registerBtn.textContent = '注册中...';
+                
+                // 发送注册请求
+                fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_name: username,
+                        email: email,
+                        password: password
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        // 注册成功
+                        successMessage.textContent = '注册成功！正在跳转到登录页面...';
+                        successMessage.style.display = 'block';
+                        
+                        // 跳转到登录页面
+                        setTimeout(() => {
+                            window.location.href = '/static/login.html?success=registration_successful';
+                        }, 1500);
+                    } else {
+                        // 注册失败
+                        errorMessage.textContent = data.error || '注册失败，请重试！';
+                        errorMessage.style.display = 'block';
+                        
+                        // 恢复注册按钮
+                        registerBtn.disabled = false;
+                        registerBtn.textContent = '注册';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorMessage.textContent = '注册失败，请检查网络连接！';
+                    errorMessage.style.display = 'block';
+                    
+                    // 恢复注册按钮
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = '注册';
+                });
+            });
+        });
     </script>
 </body>
 </html>

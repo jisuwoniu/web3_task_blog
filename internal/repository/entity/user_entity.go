@@ -7,7 +7,7 @@ import (
 
 type User struct {
 	Username  string     `gorm:"comment:用户名;type:varchar(18)"`                // A regular string field
-	Password  string     `gorm:"comment:用户邮箱;type:varchar(128)"`              // A pointer to a string, allowing for null values
+	Password  string     `gorm:"comment:用户密码;type:varchar(128)"`              // 修正注释
 	Email     string     `gorm:"comment:用户邮箱;type:varchar(32)"`               // A pointer to a string, allowing for null values
 	Age       uint8      `gorm:"comment:用户年龄;size:8"`                         // An unsigned 8-bit integer
 	Birthday  *time.Time `gorm:"comment:用户生日"`                                // A pointer to time.Time, can be null

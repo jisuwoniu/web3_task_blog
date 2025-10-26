@@ -5,7 +5,7 @@ import (
 )
 
 type UserDTO struct {
-	ID        uint32    `json:"id"`
+	ID        uint      `json:"id"`
 	Username  string    `json:"user_name"`  // A regular string field
 	Password  string    `json:"password"`   // A pointer to a string, allowing for null values
 	Email     string    `json:"email"`      // A pointer to a string, allowing for null values
