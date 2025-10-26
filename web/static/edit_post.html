@@ -19,8 +19,8 @@
             flex-direction: column;
             min-height: 100vh;
         }
-        /* 顶部导航栏 */
-        .header {
+        /* 导航栏样式 */
+        .navbar {
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 15px 20px;
@@ -28,32 +28,29 @@
             justify-content: space-between;
             align-items: center;
         }
-        .blog-title {
-            font-size: 20px;
+        .navbar-brand {
+            font-size: 24px;
             font-weight: 600;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-nav li {
+            margin-left: 20px;
+        }
+        .navbar-nav a {
             color: #333;
             text-decoration: none;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        .username {
-            margin-right: 15px;
             font-weight: 500;
+            transition: color 0.3s;
         }
-        .login-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
-        .login-btn:hover {
-            background-color: #0069d9;
+        .navbar-nav a:hover {
+            color: #007bff;
         }
         /* 内容区域 */
         .content {
@@ -177,14 +174,17 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <a href="/index.html" class="blog-title">博客系统</a>
-        <div class="user-info">
-            <div id="user-section" class="user-section">
-                <!-- 用户信息将通过JavaScript动态加载 -->
-            </div>
-        </div>
-    </header>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <i class="fas fa-blog"></i> 博客系统
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="/">首页</a></li>
+            <li><a href="#" id="create-post-link">写文章</a></li>
+            <li><a href="/profile">个人资料</a></li>
+            <li><a href="#" id="logout-link">退出</a></li>
+        </ul>
+    </nav>
 
     <main class="content">
         <a href="/profile" class="back-link">
@@ -230,41 +230,25 @@
 
         }
 
-        // 检查用户登录状态
-        async function checkUserStatus() {
+        // 退出登录
+        async function logout() {
             try {
-                const response = await fetch('/api/user/status');
-                const data = await response.json();
+                // 清除本地存储的token
+                localStorage.removeItem('token');
+                sessionStorage.removeItem('token');
                 
-                const userSection = document.getElementById('user-section');
+                // 调用后端退出登录API
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    credentials: 'include' // 包含cookie
+                });
                 
-                if (data.loggedIn && data.user) {
-                    // 用户已登录
-                    userSection.innerHTML = `
-                        <span class="username">${data.user.username}</span>
-                        <a href="/profile" class="login-btn">个人中心</a>
-                    `;
-                    
-                    // 检查是否是编辑模式
-                    const postId = getPostIdFromUrl();
-                    console.log("postId=="+postId)
-                    if (postId) {
-                        // 编辑模式
-                        loadPost(postId);
-                    } else {
-                        // 新建模式
-                        document.getElementById('page-title').textContent = '新建文章';
-                        document.getElementById('loading').style.display = 'none';
-                        document.getElementById('editor-container').style.display = 'block';
-                    }
-                } else {
-                    // 用户未登录，重定向到登录页面
-                    window.location.href = '/static/login.html';
-                }
+                // 无论API响应如何，都重定向到登录页面
+                window.location.href = '/login';
             } catch (error) {
-                console.error('检查用户状态失败:', error);
-                // 重定向到登录页面
-                window.location.href = '/static/login.html';
+                console.error('退出登录失败:', error);
+                // 即使出错也重定向到登录页面
+                window.location.href = '/login';
             }
         }
 
@@ -386,10 +370,33 @@
 
         // 页面加载时执行
         document.addEventListener('DOMContentLoaded', () => {
-            checkUserStatus();
+            // 检查是否是编辑模式
+            const postId = getPostIdFromUrl();
+            console.log("postId=="+postId)
+            if (postId) {
+                // 编辑模式
+                loadPost(postId);
+            } else {
+                // 新建模式
+                document.getElementById('page-title').textContent = '新建文章';
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('editor-container').style.display = 'block';
+            }
             
             // 添加保存按钮事件
             document.getElementById('save-btn').addEventListener('click', savePost);
+            
+            // 添加退出登录事件
+            document.getElementById('logout-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                logout();
+            });
+            
+            // 添加写文章链接事件
+            document.getElementById('create-post-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/posts/create-post';
+            });
         });
     </script>
 </body>

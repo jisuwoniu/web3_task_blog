@@ -53,17 +53,13 @@
             color: #007bff;
         }
         .logout-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
+            color: #333;
             text-decoration: none;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            transition: color 0.3s;
         }
         .logout-btn:hover {
-            background-color: #c82333;
+            color: #007bff;
         }
         /* 内容区域 */
         .content {
@@ -537,6 +533,12 @@
         // 页面加载时执行
         document.addEventListener('DOMContentLoaded', () => {
             checkUserStatus();
+            
+            // 添加写文章链接事件
+            document.getElementById('create-post-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/posts/create-post';
+            });
         });
     </script>
 </body>
