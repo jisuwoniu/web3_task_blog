@@ -12,10 +12,9 @@ func SetupRoutes() *gin.Engine {
 	r := gin.Default()
 	// 配置静态文件服务
 	r.Static("/static", "./web/static")
-
-	// 加载HTML模板
-	r.LoadHTMLGlob("web/static/*")
-	//handler.InitTemplates()
+	//
+	//// 加载HTML模板
+	r.LoadHTMLGlob("web/static/*.html")
 	// 公开路由
 	public := r.Group("/")
 	{
