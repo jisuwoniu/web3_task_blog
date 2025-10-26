@@ -1,4 +1,10 @@
 # web3_task_blog
+![主界面截图](./web/static/images/a5aa1d00-e383-490a-a47b-6467146dbe48.png "这是我们的主界面")
+![个人空间](./web/static/images/3cd7619a-4a39-429d-be56-a5ee19605dcb.png "个人空间")
+![文章编辑页面](./web/static/images/92c0d91e-d249-49d0-8486-9cbdf661a011.png "文章编辑页面")
+![登录页面](./web/static/images/960f69aa-6116-4423-a728-2f4443c213ce.png "登录页面")
+![查看并评论页面](./web/static/images/cb8b823c-d144-4b91-bdab-827603a18de6.png "查看并评论页面")
+
 # 作业要求概述
 > 本次作业要求你使用 Go 语言结合 Gin 框架和 GORM 库开发一个个人博客系统的后端，实现博客文章的基本管理功能，包括文章的创建、读取、更新和删除（CRUD）操作，同时支持用户认证和简单的评论功能。
 ## 1. 项目初始化
